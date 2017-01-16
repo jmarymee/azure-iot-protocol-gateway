@@ -156,6 +156,7 @@ namespace ProtocolGateway.Host.Common
                 .Channel<TcpServerSocketChannel>()
                 .ChildHandler(new ActionChannelInitializer<ISocketChannel>(channel =>
                 {
+                    channel.Pipeline.AddLast(new DCMProvisionHandler());
                     channel.Pipeline.AddLast(TlsHandler.Server(this.tlsCertificate));
                     channel.Pipeline.AddLast(
                         MqttEncoder.Instance,
