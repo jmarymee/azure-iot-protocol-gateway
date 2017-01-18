@@ -157,7 +157,7 @@ namespace ProtocolGateway.Host.Common
                 .ChildHandler(new ActionChannelInitializer<ISocketChannel>(channel =>
                 {
                     channel.Pipeline.AddLast(new DCMProvisionHandler());
-                    channel.Pipeline.AddLast(TlsHandler.Server(this.tlsCertificate));
+                    //channel.Pipeline.AddLast(TlsHandler.Server(this.tlsCertificate));
                     channel.Pipeline.AddLast(
                         MqttEncoder.Instance,
                         new MqttDecoder(true, maxInboundMessageSize),
