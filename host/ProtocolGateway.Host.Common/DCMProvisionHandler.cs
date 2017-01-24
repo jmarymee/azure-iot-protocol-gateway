@@ -106,14 +106,16 @@ namespace ProtocolGateway.Host.Common
 
                         Console.WriteLine("Received (Enc): " + buffer.ToString(Encoding.UTF8));
                     }
-                    for (int i = 0; i < buffer.ToArray().GetLength(0); i++)
-                    {
-                        byte temp;
-                        temp = (byte)(buffer.GetByte(i) ^ 0x1);
-                        buffer.SetByte(i, temp);
 
-                    }
-                    Console.WriteLine("Received (Clear) " + buffer.ToString(Encoding.UTF8));
+                    //Do nothing to the message
+                    //for (int i = 0; i < buffer.ToArray().GetLength(0); i++)
+                    //{
+                    //    byte temp;
+                    //    temp = (byte)(buffer.GetByte(i) ^ 0x1);
+                    //    buffer.SetByte(i, temp);
+
+                    //}
+                    //Console.WriteLine("Received (Clear) " + buffer.ToString(Encoding.UTF8));
 
                     step = 1;
 
