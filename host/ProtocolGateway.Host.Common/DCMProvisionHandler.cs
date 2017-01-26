@@ -21,6 +21,7 @@ namespace ProtocolGateway.Host.Common
     {
         short step = 0;
         int secretSize = 1024;
+        static bool isEncrypt = true;
 
         public override void ChannelActive(IChannelHandlerContext context)
         {
@@ -72,6 +73,16 @@ namespace ProtocolGateway.Host.Common
                    case 0:
                     Console.WriteLine("Case 0"); // Diffie hellman send 
                     Console.WriteLine("Received (Echo): " + buffer.ToString(Encoding.UTF8));
+                    if ((buffer.ToString(Encoding.UTF8)).Equals("ENCRYPT\0"))
+                    {
+                        Console.WriteLine("Encryption has been requested");
+                        isEncrypt = true;
+                    }
+                    else
+                    {
+                        Console.WriteLine("No encryption has been requested");
+                        isEncrypt = false;
+                    }
                     //===============send reply
                     IByteBuffer tempmessage = Unpooled.Buffer(secretSize);
                     byte[] msgbytes = new byte[secretSize];
@@ -107,15 +118,18 @@ namespace ProtocolGateway.Host.Common
                         Console.WriteLine("Received (Enc): " + buffer.ToString(Encoding.UTF8));
                     }
 
-                    //Do nothing to the message
-                    //for (int i = 0; i < buffer.ToArray().GetLength(0); i++)
-                    //{
-                    //    byte temp;
-                    //    temp = (byte)(buffer.GetByte(i) ^ 0x1);
-                    //    buffer.SetByte(i, temp);
+                    //Do nothing to the message if not encrypted
+                    if (isEncrypt)
+                    {
+                        for (int i = 0; i < buffer.ToArray().GetLength(0); i++)
+                        {
+                            byte temp;
+                            temp = (byte)(buffer.GetByte(i) ^ 0x1);
+                            buffer.SetByte(i, temp);
 
-                    //}
-                    //Console.WriteLine("Received (Clear) " + buffer.ToString(Encoding.UTF8));
+                        }
+                    }
+                    Console.WriteLine("Received (Clear) " + buffer.ToString(Encoding.UTF8));
 
                     step = 1;
 
@@ -196,12 +210,16 @@ namespace ProtocolGateway.Host.Common
             {
                 Console.WriteLine("Sending :(Clear) " + buffer.ToString(Encoding.UTF8));
             }
-            for (int i = 0; i < buffer.ToArray().GetLength(0); i++)
-            {
-                byte temp;
-                temp = (byte)(buffer.GetByte(i) ^ 0x1);
-                buffer.SetByte(i, temp);
 
+            if (isEncrypt)
+            {
+                for (int i = 0; i < buffer.ToArray().GetLength(0); i++)
+                {
+                    byte temp;
+                    temp = (byte)(buffer.GetByte(i) ^ 0x1);
+                    buffer.SetByte(i, temp);
+
+                }
             }
             Console.WriteLine("sending :(ENC) " + buffer.ToString(Encoding.UTF8));
 
