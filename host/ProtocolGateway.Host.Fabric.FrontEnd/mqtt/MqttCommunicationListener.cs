@@ -118,7 +118,7 @@
             {
                 this.logger.Informational(traceId, this.componentName, "Disposing of Mqtt listener.");
                 this.serverControl.Cancel(false);
-                this.bootStrapper.CloseCompletion.Wait(TimeSpan.FromSeconds(20));
+                this.bootStrapper?.CloseCompletion.Wait(TimeSpan.FromSeconds(20));
                 this.runTask.Wait(3000, CancellationToken.None);
             }
             catch (ObjectDisposedException e)
